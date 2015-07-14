@@ -5,6 +5,7 @@
 		, height: 25
 		, cell_size: 16
 		, tick_length: 250
+		, pattern: null
 		 
 		
     }
@@ -29,7 +30,6 @@
 
     $.fn.GameOfLife = function(method) {
 
-		console.log (methods[method]);
         if (methods[method]) {//method recognised		  
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else {//constructor
@@ -46,7 +46,7 @@
 
 
 		var CELL_STATES = {ALIVE: 1, DEAD: 0};
-		var COLOURS = { GRID:"#fff", GRIDLINE:"#8CEFFD", CELL:"#FFDFF8"};
+		var COLOURS = { GRID:"#fff", GRIDLINE:"#8CEFFD", CELL:"#7BCAE1"};
 		var CONDITIONS = {MIN:2, MAX: 3, SPAWN:3};
 
 		var $source_element = $(input);
@@ -68,6 +68,10 @@
 		
 	    $container_element = $("<div/>")
 						.attr("id", $(input).data("settings").prefix + $source_element[0].id )
+						.append
+						(	
+							 $label_generations = $("<div/>")
+						)
 						//add Canvas
 						.append(
 							$canvas = $("<canvas>").attr("style", "border:1px black solid")
@@ -90,30 +94,20 @@
 											
 											        x -= _Ctx.canvas.offsetLeft;
 													y -= _Ctx.canvas.offsetTop;
-
-											
-											
+																						
 											x = Math.floor((x - 1) / $(input).data("settings").cell_size);
 											y = Math.floor((y - 1) / $(input).data("settings").cell_size);
-																		
-												
-																		
+																														
 											var state = _Cells[y][x] == CELL_STATES.ALIVE ? CELL_STATES.DEAD : CELL_STATES.ALIVE;													
-											
-											console.log (x + "," + y, state);
 											
 											_Cells[y][x] =  state;
 											
-										})
-									
+										})									
 						)
 						.append("<br/>")
-						.append(label_generations = $("<div/>"))
-						//add Start Button
 						.append($("<button>").html("Start").click(function(){
 							_Paused = false;
-							
-						}))
+						}))						
 						//add Stop Button
 						.append($("<button>").html("Stop").click(function(){
 							_Paused = true;
@@ -135,9 +129,21 @@
         $source_element.hide();	
 
 		Reset();
+		
+		
+		//Any predefined patterns?
+		if ($(input).data("settings").pattern != null){			
+			$(input).data("settings").pattern.map(function(p){				
+				for (var y = 0 ; y < p.Data.length; y++){
+					for (var x = 0 ; x < p.Data[y].length; x++){ 
+						_Cells[p.StartY + y][p.StartX + x] = p.Data[y][x];
+					}
+				}				
+			})			
+		}
 
 		/*
-			https://developer.mozilla.org/en-US/docs/Games/Anatomy
+			Animation loop, described in more detail here: https://developer.mozilla.org/en-US/docs/Games/Anatomy
 		*/
 		;(function () {
 		  function main( tFrame ) {
@@ -176,6 +182,8 @@
 		})();	
 		
 
+	
+
 		
 		function Reset(){
 			_Generation = 0;
@@ -197,8 +205,6 @@
 					neighbours =  CountCellNeighbours(x,y);
 					
 					if (_Cells[y][x] == CELL_STATES.ALIVE){			
-
-						console.log (x + "," + y,neighbours );
 													
 						if (neighbours >= CONDITIONS.MIN
 							&& neighbours <= CONDITIONS.MAX){
@@ -268,7 +274,7 @@
 		
 		
 		function UpdateGenerationLabel(){
-			label_generations.html("Generations: " + _Generation);
+			$label_generations.html("Generations: " + _Generation);
 		}
 
 		
