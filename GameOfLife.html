@@ -9,19 +9,54 @@
 	
 	$(document).ready(function() {
 
-		$("#gol").GameOfLife({width:50,cell_size:16});
+		$("#gol").GameOfLife(
+								{
+									width:50
+									, tick_length:100
+									,cell_size:16
+									, pattern:[
+												{StartX:5, StartY:5, Data:[[1,1,1,1,1,1,1,1,1,1]]}	//10 cell long rod
+												, {StartX:10, StartY:10, Data:[[0,0,1],[1,0,1],[0,1,1]]}	//Glider
+												, {StartX:25, StartY:15, Data:[[0,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,0,1,1,0]]}	//Light weight space ship
+											]
+								}
+							);
 		
-		$("#gol1").GameOfLife({width:25,cell_size:24});
-
 
 	})
 
 	</script>
 	<body>
 	
-		<div id="gol">GOL</div>
+		<h1>Game of Life</h1>
+		<p>A jQuery plugin that does what it says on the tin, namely Conway's Game of Life.</p>
+		<p>To use, click anywhere on the grid to fill a cell and to unfill a cell click it again.</p>
+		<p>The buttons Start, Stop, Step and Reset are self explanatory I think :)</p>
+	
+		<div id="gol"></div>
 		
-<div id="gol1">GOL</div>
+		<h2>Arguments</h2>
+		<p>
+			Initialising this is simple:
+		</p>
+		
+		The following arguments can be passed:
+		<ul>
+			<li><i>width</i> - the number of cells wide the grid is, default 25.
+			<li><i>height</i> - the number of cells high the grid is, default 25.
+			<li><i>tick_length</i> - the time in milliseconds between updates, default 250ms.
+			<li><i>cell_size</i> - the size in pixels of the cell, default 16.
+			<li><i>pattern</i> - an array of objects specifying the cell configuration on start up, default null. See below.
+		</ul>
+		
+		<h3>pattern</h3>
+		An array of objects, with the the following structure,  {StartX:<i>xval</i>, StartY:<i>yval</i>, Data:<i>2darray</i>} that are used to add structures to grid.
+		
+		<p>StartX and StartY are the grid location where the 2darray contained in data is to be placed. The following example places a vertical bar, 3 cells high, in location 10,10:</p>
+		
+		<i>{StartX:10, StartY:10, Data:[[0,1,0],[0,1,0],[0,1,0]]}</i>
+		
+		
 		
 	</body>
 </html>
